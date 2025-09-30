@@ -15,4 +15,9 @@ class Platillo extends Model
         'estatus',
         'fk_categoria_alimento',
     ];
+
+    public function categoriaAlimento()
+    {
+        return $this->belongsTo(CategoriaAlimento::class, 'fk_categoria_alimento');
+    }
 }

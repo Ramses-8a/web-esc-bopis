@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\PlatilloController;
 use App\Http\Controllers\Api\UserMovilController;
+use App\Http\Controllers\Api\CarritoController;
+use App\Http\Controllers\Api\PedidoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,11 +22,21 @@ Route::get('/test', function () {
     return 'hola mundo';
 });
 
-// Route::apiResource('/user-movil', Api\UserMovilController::class);
-Route::post('/register', [UserMovilController::class, 'store'])->name('register');
-Route::post('/login', [UserMovilController::class, 'login'])->name('login');
+// UserMovilController Routes
+Route::post('/register', [UserMovilController::class, 'store']);
+Route::post('/login', [UserMovilController::class, 'login']);
 
-Route::get('/register', function(){
-    return 'los cosos';
-});
+// PlatilloController Routes
+Route::get('/platillos', [PlatilloController::class, 'index']);
+Route::post('/platillos', [PlatilloController::class, 'store']);
 
+// CarritoController Routes
+Route::get('/carrito', [CarritoController::class, 'index']);
+Route::post('/carrito', [CarritoController::class, 'store']);
+Route::post('/carrito/remove', [CarritoController::class, 'destroy']);
+Route::post('/carrito/clear', [CarritoController::class, 'clearCart']);
+
+// PedidoController Routes
+Route::get('/pedidos', [PedidoController::class, 'index']);
+Route::post('/pedidos', [PedidoController::class, 'store']);
+Route::get('/pedidos/user/{fk_usuario}', [PedidoController::class, 'showByUserMovil']);

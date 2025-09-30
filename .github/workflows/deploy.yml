@@ -1,0 +1,31 @@
+# Nombre del workflow que verás en la pestaña "Actions" de GitHub
+name: Deploy to Server
+
+# Define el disparador: se ejecuta al hacer un "push" a la rama "main"
+on:
+  push:
+    branches:
+      - main
+
+# Define los trabajos (tareas) que se van a ejecutar
+jobs:
+  deploy:
+    # Usa la última versión de Ubuntu como sistema operativo virtual
+    runs-on: ubuntu-latest
+
+    # Define los pasos a seguir
+    steps:
+      # 1. Clona tu repositorio en la máquina virtual
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Sube los archivos al servidor usando SFTP
+      - name: Deploy files via SFTP
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /ruta/a/tu/proyecto/en/el/servidor
+            git pull
