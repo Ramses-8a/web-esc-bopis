@@ -1,31 +1,38 @@
-# Nombre del workflow que verás en la pestaña "Actions" de GitHub
+# Nombre del workflow
 name: Deploy to Server
 
-# Define el disparador: se ejecuta al hacer un "push" a la rama "main"
+# Se ejecuta al hacer un "push" a la rama "main"
 on:
   push:
     branches:
       - main
 
-# Define los trabajos (tareas) que se van a ejecutar
 jobs:
   deploy:
-    # Usa la última versión de Ubuntu como sistema operativo virtual
     runs-on: ubuntu-latest
-
-    # Define los pasos a seguir
     steps:
       # 1. Clona tu repositorio en la máquina virtual
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Sube los archivos al servidor usando SFTP
+      # 2. Sube los archivos al servidor
       - name: Deploy files via SFTP
-        uses: appleboy/ssh-action@v1.0.3
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            cd /ruta/a/tu/proyecto/en/el/servidor
-            git pull
+          # Protocolo a usar (sftp es más seguro que ftp)
+          protocol: sftp
+          # Puerto (usualmente 22 para SFTP)
+          port: 22
+          # Credenciales del servidor (tomadas de los secrets)
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          
+          # Ruta en tu servidor donde se subirán los archivos.
+          # ¡¡¡IMPORTANTE: CAMBIA ESTA RUTA!!!
+          remote-path: /ruta/a/tu/proyecto/en/el/servidor/
+
+          # --- LA SOLUCIÓN MÁGICA ESTÁ AQUÍ ---
+          # Opciones extra para la conexión SFTP
+          sftp-options: >
+            -o KexAlgorithms=+diffie-hellman-group-exchange-sha256
